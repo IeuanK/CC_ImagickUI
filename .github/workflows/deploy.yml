@@ -1,9 +1,12 @@
-name: Deploy to GitHub Pages
+name: Build and Deploy
 
 on:
   push:
     branches:
-      - claude/imagemagick-node-editor-Hvjkr
+      - '**'
+  pull_request:
+    branches:
+      - '**'
   workflow_dispatch:
 
 permissions:
@@ -30,6 +33,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to pages branch
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

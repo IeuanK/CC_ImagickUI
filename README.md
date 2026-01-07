@@ -36,14 +36,18 @@ npm run build
 
 ### Deployment
 
-The project is configured to automatically deploy to GitHub Pages:
+The project uses GitHub Actions for CI/CD:
 
-1. Push changes to the `claude/imagemagick-node-editor-Hvjkr` branch
-2. GitHub Actions will automatically build the project
-3. The built files are pushed to the `pages` branch
-4. GitHub Pages serves the site from the `pages` branch
+**On any branch or pull request:**
+- GitHub Actions runs a build check to verify the project builds successfully
+- This ensures code quality before merging
 
-The live site will be available at: `https://[username].github.io/CC_ImagickUI/`
+**On pushes to the `master` branch:**
+- GitHub Actions builds the project
+- The built files are automatically deployed to the `pages` branch
+- GitHub Pages serves the site from the `pages` branch
+
+The live site is available at: `https://[username].github.io/CC_ImagickUI/`
 
 ## Usage
 
