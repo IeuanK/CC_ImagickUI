@@ -34,6 +34,17 @@ Open your browser to `http://localhost:5173/`
 npm run build
 ```
 
+### Deployment
+
+The project is configured to automatically deploy to GitHub Pages:
+
+1. Push changes to the `claude/imagemagick-node-editor-Hvjkr` branch
+2. GitHub Actions will automatically build the project
+3. The built files are pushed to the `pages` branch
+4. GitHub Pages serves the site from the `pages` branch
+
+The live site will be available at: `https://[username].github.io/CC_ImagickUI/`
+
 ## Usage
 
 1. **Add Nodes**: Right-click on the canvas or use the node palette to add nodes
