@@ -1,46 +1,45 @@
-import { Node } from '@baklavajs/core'
-import { NodeInterface } from '@baklavajs/core'
+import { defineNode, NodeInterface } from '@baklavajs/core'
 import { initializeImageMagick, ImageMagick, MagickFormat, MagickGeometry } from 'magica'
 
-export default class ScaleNode extends Node {
-  type = 'ScaleNode'
-  name = 'Scale'
-
-  constructor() {
-    super()
-
-    this.addInputInterface('Image', new NodeInterface('Image', null))
-    this.addOutputInterface('Image', new NodeInterface('Image', null))
-
-    this.addOption('width', 'NumberOption', 800, undefined, { min: 1, max: 10000 })
-    this.addOption('height', 'NumberOption', 600, undefined, { min: 1, max: 10000 })
-    this.addOption('maintainAspectRatio', 'CheckboxOption', true)
-    this.addOption('scaleMode', 'SelectOption', 'Resize', undefined, {
-      items: ['Resize', 'Scale', 'Sample', 'Thumbnail']
-    })
-    this.addOption('ignoreAspectRatio', 'CheckboxOption', false)
-    this.addOption('onlyShrink', 'CheckboxOption', false)
-    this.addOption('onlyEnlarge', 'CheckboxOption', false)
-    this.addOption('fillArea', 'CheckboxOption', false)
-    this.addOption('percentage', 'CheckboxOption', false)
-  }
-
-  async calculate() {
-    const inputImage = this.getInterface('Image').value
+export const ScaleNode = defineNode({
+  type: 'ScaleNode',
+  title: 'Scale',
+  inputs: {
+    image: () => new NodeInterface('Image', null)
+  },
+  outputs: {
+    image: () => new NodeInterface('Image', null)
+  },
+  state: {
+    width: 800,
+    height: 600,
+    maintainAspectRatio: true,
+    scaleMode: 'Resize',
+    ignoreAspectRatio: false,
+    onlyShrink: false,
+    onlyEnlarge: false,
+    fillArea: false,
+    percentage: false
+  },
+  onCreate() {
+    this.state.width = 800
+    this.state.height = 600
+    this.state.maintainAspectRatio = true
+    this.state.scaleMode = 'Resize'
+    this.state.ignoreAspectRatio = false
+    this.state.onlyShrink = false
+    this.state.onlyEnlarge = false
+    this.state.fillArea = false
+    this.state.percentage = false
+  },
+  async onCalculate() {
+    const inputImage = this.inputs.image.value
 
     if (!inputImage || !inputImage.data) {
-      return { 'Image': null }
+      return { image: null }
     }
 
-    const width = this.getOptionValue('width')
-    const height = this.getOptionValue('height')
-    const maintainAspectRatio = this.getOptionValue('maintainAspectRatio')
-    const scaleMode = this.getOptionValue('scaleMode')
-    const ignoreAspectRatio = this.getOptionValue('ignoreAspectRatio')
-    const onlyShrink = this.getOptionValue('onlyShrink')
-    const onlyEnlarge = this.getOptionValue('onlyEnlarge')
-    const fillArea = this.getOptionValue('fillArea')
-    const percentage = this.getOptionValue('percentage')
+    const { width, height, scaleMode, ignoreAspectRatio, onlyShrink, onlyEnlarge, fillArea, percentage } = this.state
 
     try {
       await initializeImageMagick()
@@ -72,7 +71,7 @@ export default class ScaleNode extends Node {
       })
 
       return {
-        'Image': {
+        image: {
           data: outputData,
           filename: inputImage.filename,
           type: 'image/png'
@@ -83,4 +82,4 @@ export default class ScaleNode extends Node {
       throw error
     }
   }
-}
+})
