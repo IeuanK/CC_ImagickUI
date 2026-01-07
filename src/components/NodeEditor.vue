@@ -11,7 +11,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { Editor } from '@baklavajs/core'
-import { ViewPlugin } from '@baklavajs/renderer-vue'
+import { ViewPlugin } from '@baklavajs/plugin-renderer-vue'
 import { EnginePlugin, Engine } from '@baklavajs/plugin-engine'
 import { InterfaceTypePlugin } from '@baklavajs/plugin-interface-types'
 
@@ -22,14 +22,12 @@ import ScaleNode from '../nodes/ScaleNode'
 
 import FileInput from './node-options/FileInput.vue'
 import OutputPreview from './node-options/OutputPreview.vue'
-import CustomOutputNode from './CustomOutputNode.vue'
 
 const baklava = new Editor()
 
 const viewPlugin = new ViewPlugin()
 viewPlugin.registerOption('FileInput', FileInput)
 viewPlugin.registerOption('OutputPreview', OutputPreview)
-viewPlugin.registerNode('OutputNode', CustomOutputNode)
 baklava.use(viewPlugin)
 
 const enginePlugin = new EnginePlugin(true)
