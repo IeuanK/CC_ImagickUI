@@ -5,7 +5,16 @@ export default defineConfig({
   base: '/CC_ImagickUI/',
   plugins: [vue()],
   optimizeDeps: {
-    exclude: ['magica']
+    exclude: ['magica'],
+    include: ['@baklavajs/core', '@baklavajs/plugin-renderer-vue', '@baklavajs/plugin-engine', '@baklavajs/plugin-interface-types']
+  },
+  build: {
+    minify: false,
+    sourcemap: true,
+    commonjsOptions: {
+      include: [/@baklavajs/, /node_modules/],
+      transformMixedEsModules: true
+    }
   },
   server: {
     headers: {
