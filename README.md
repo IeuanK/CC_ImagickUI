@@ -34,6 +34,21 @@ Open your browser to `http://localhost:5173/`
 npm run build
 ```
 
+### Deployment
+
+The project uses GitHub Actions for CI/CD:
+
+**On any branch or pull request:**
+- GitHub Actions runs a build check to verify the project builds successfully
+- This ensures code quality before merging
+
+**On pushes to the `master` branch:**
+- GitHub Actions builds the project
+- The built files are automatically deployed to the `pages` branch
+- GitHub Pages serves the site from the `pages` branch
+
+The live site is available at: `https://[username].github.io/CC_ImagickUI/`
+
 ## Usage
 
 1. **Add Nodes**: Right-click on the canvas or use the node palette to add nodes
