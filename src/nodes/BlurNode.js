@@ -1,46 +1,45 @@
-import { Node } from '@baklavajs/core'
-import { NodeInterface } from '@baklavajs/core'
+import { defineNode, NodeInterface } from '@baklavajs/core'
 import { initializeImageMagick, ImageMagick, MagickFormat } from 'magica'
 
-export default class BlurNode extends Node {
-  type = 'BlurNode'
-  name = 'Blur'
-
-  constructor() {
-    super()
-
-    this.addInputInterface('Image', new NodeInterface('Image', null))
-    this.addOutputInterface('Image', new NodeInterface('Image', null))
-
-    this.addOption('radius', 'NumberOption', 0, undefined, { min: 0, max: 100 })
-    this.addOption('sigma', 'NumberOption', 1, undefined, { min: 0, max: 100 })
-    this.addOption('channel', 'SelectOption', 'All', undefined, {
-      items: ['All', 'Red', 'Green', 'Blue', 'Alpha', 'Composite']
-    })
-  }
-
-  async calculate() {
-    const inputImage = this.getInterface('Image').value
+export const BlurNode = defineNode({
+  type: 'BlurNode',
+  title: 'Blur',
+  inputs: {
+    image: () => new NodeInterface('Image', null)
+  },
+  outputs: {
+    image: () => new NodeInterface('Image', null)
+  },
+  state: {
+    radius: 0,
+    sigma: 1,
+    channel: 'All'
+  },
+  onCreate() {
+    this.state.radius = 0
+    this.state.sigma = 1
+    this.state.channel = 'All'
+  },
+  async onCalculate() {
+    const inputImage = this.inputs.image.value
 
     if (!inputImage || !inputImage.data) {
-      return { 'Image': null }
+      return { image: null }
     }
 
-    const radius = this.getOptionValue('radius')
-    const sigma = this.getOptionValue('sigma')
-    const channel = this.getOptionValue('channel')
+    const radius = this.state.radius
+    const sigma = this.state.sigma
 
     try {
       await initializeImageMagick()
 
       const outputData = await ImageMagick.read(inputImage.data, async (image) => {
         image.blur(radius, sigma)
-
         return await image.write(MagickFormat.Png, (data) => data)
       })
 
       return {
-        'Image': {
+        image: {
           data: outputData,
           filename: inputImage.filename,
           type: 'image/png'
@@ -51,4 +50,4 @@ export default class BlurNode extends Node {
       throw error
     }
   }
-}
+})

@@ -1,41 +1,35 @@
-import { Node } from '@baklavajs/core'
-import { NodeInterface } from '@baklavajs/core'
+import { defineNode, NodeInterface } from '@baklavajs/core'
 import { initializeImageMagick, ImageMagick, MagickFormat } from 'magica'
 
-export default class OutputNode extends Node {
-  type = 'OutputNode'
-  name = 'Output Image'
-
-  constructor() {
-    super()
-
-    this.addInputInterface('Image', new NodeInterface('Image', null))
-
-    this.addOption('filename', 'InputOption', 'output', undefined, {
-      component: 'TextInput'
-    })
-    this.addOption('format', 'SelectOption', 'png', undefined, {
-      items: ['png', 'jpg']
-    })
-    this.addOption('preview', 'ButtonOption', null, undefined, {
-      component: 'OutputPreview'
-    })
-
-    this.outputImageUrl = null
-    this.outputBlob = null
-  }
-
-  async calculate() {
-    const inputImage = this.getInterface('Image').value
+export const OutputNode = defineNode({
+  type: 'OutputNode',
+  title: 'Output Image',
+  inputs: {
+    image: () => new NodeInterface('Image', null)
+  },
+  state: {
+    filename: 'output',
+    format: 'png',
+    outputImageUrl: null,
+    outputBlob: null
+  },
+  onCreate() {
+    this.state.filename = 'output'
+    this.state.format = 'png'
+    this.state.outputImageUrl = null
+    this.state.outputBlob = null
+  },
+  async onCalculate() {
+    const inputImage = this.inputs.image.value
 
     if (!inputImage || !inputImage.data) {
-      this.outputImageUrl = null
-      this.outputBlob = null
+      this.state.outputImageUrl = null
+      this.state.outputBlob = null
       return {}
     }
 
-    const filename = this.getOptionValue('filename')
-    const format = this.getOptionValue('format')
+    const filename = this.state.filename
+    const format = this.state.format
 
     try {
       await initializeImageMagick()
@@ -51,14 +45,12 @@ export default class OutputNode extends Node {
         return await image.write(magickFormat, (data) => data)
       })
 
-      if (this.outputImageUrl) {
-        URL.revokeObjectURL(this.outputImageUrl)
+      if (this.state.outputImageUrl) {
+        URL.revokeObjectURL(this.state.outputImageUrl)
       }
 
-      this.outputBlob = new Blob([outputData], { type: mimeType })
-      this.outputImageUrl = URL.createObjectURL(this.outputBlob)
-
-      this.events.update.emit(this)
+      this.state.outputBlob = new Blob([outputData], { type: mimeType })
+      this.state.outputImageUrl = URL.createObjectURL(this.state.outputBlob)
 
       return {}
     } catch (error) {
@@ -66,21 +58,22 @@ export default class OutputNode extends Node {
       throw error
     }
   }
+})
 
-  download() {
-    if (!this.outputBlob) {
-      alert('No image to download. Run the graph first.')
-      return
-    }
-
-    const filename = this.getOptionValue('filename')
-    const format = this.getOptionValue('format')
-
-    const a = document.createElement('a')
-    a.href = this.outputImageUrl
-    a.download = `${filename}.${format}`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+// Add download method to the node prototype
+OutputNode.prototype.download = function() {
+  if (!this.state.outputBlob) {
+    alert('No image to download. Run the graph first.')
+    return
   }
+
+  const filename = this.state.filename
+  const format = this.state.format
+
+  const a = document.createElement('a')
+  a.href = this.state.outputImageUrl
+  a.download = `${filename}.${format}`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
 }

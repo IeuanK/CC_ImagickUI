@@ -9,42 +9,29 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { Editor } from '@baklavajs/core'
-import { ViewPlugin } from '@baklavajs/plugin-renderer-vue'
-import { EnginePlugin, Engine } from '@baklavajs/plugin-engine'
-import { InterfaceTypePlugin } from '@baklavajs/plugin-interface-types'
+import { onMounted } from 'vue'
+import { useBaklava } from '@baklavajs/renderer-vue'
+import { DependencyEngine } from '@baklavajs/engine'
 
-import InputNode from '../nodes/InputNode'
-import OutputNode from '../nodes/OutputNode'
-import BlurNode from '../nodes/BlurNode'
-import ScaleNode from '../nodes/ScaleNode'
+import { InputNode } from '../nodes/InputNode'
+import { OutputNode } from '../nodes/OutputNode'
+import { BlurNode } from '../nodes/BlurNode'
+import { ScaleNode } from '../nodes/ScaleNode'
 
-import FileInput from './node-options/FileInput.vue'
-import OutputPreview from './node-options/OutputPreview.vue'
+const baklava = useBaklava()
 
-const baklava = new Editor()
+// Register node types
+baklava.editor.registerNodeType(InputNode)
+baklava.editor.registerNodeType(OutputNode)
+baklava.editor.registerNodeType(BlurNode)
+baklava.editor.registerNodeType(ScaleNode)
 
-const viewPlugin = new ViewPlugin()
-viewPlugin.registerOption('FileInput', FileInput)
-viewPlugin.registerOption('OutputPreview', OutputPreview)
-baklava.use(viewPlugin)
-
-const enginePlugin = new EnginePlugin(true)
-baklava.use(enginePlugin)
-
-const intfTypePlugin = new InterfaceTypePlugin()
-baklava.use(intfTypePlugin)
-
-baklava.registerNodeType(InputNode)
-baklava.registerNodeType(OutputNode)
-baklava.registerNodeType(BlurNode)
-baklava.registerNodeType(ScaleNode)
+// Create and start the engine
+const engine = new DependencyEngine(baklava.editor)
 
 const runGraph = async () => {
   try {
-    const engine = new Engine(baklava.graph)
-    await engine.runOnce()
+    await engine.execute()
   } catch (error) {
     console.error('Error running graph:', error)
     alert('Error running graph: ' + error.message)
@@ -53,10 +40,12 @@ const runGraph = async () => {
 
 onMounted(() => {
   const inputNode = new InputNode()
-  baklava.graph.addNode(inputNode)
+  baklava.displayedGraph.addNode(inputNode)
 
   const outputNode = new OutputNode()
-  baklava.graph.addNode(outputNode)
+  baklava.displayedGraph.addNode(outputNode)
+
+  engine.start()
 })
 </script>
 

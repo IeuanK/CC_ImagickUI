@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import '@baklavajs/plugin-renderer-vue/dist/styles.css'
+import '@baklavajs/themes/dist/syrup-dark.css'
 
 createApp(App).mount('#app')

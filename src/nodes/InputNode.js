@@ -1,42 +1,23 @@
-import { Node } from '@baklavajs/core'
-import { NodeInterface } from '@baklavajs/core'
+import { defineNode, NodeInterface } from '@baklavajs/core'
 
-export default class InputNode extends Node {
-  type = 'InputNode'
-  name = 'Input Image'
-
-  constructor() {
-    super()
-
-    this.addOutputInterface('Image', new NodeInterface('Image', null))
-
-    this.addOption('file', 'InputOption', null, undefined, {
-      component: 'FileInput'
-    })
-
-    this.imageData = null
-  }
-
-  async calculate() {
-    const fileInput = this.getOptionValue('file')
-
-    if (fileInput && fileInput instanceof File) {
-      const arrayBuffer = await fileInput.arrayBuffer()
-      const uint8Array = new Uint8Array(arrayBuffer)
-
-      this.imageData = {
-        data: uint8Array,
-        filename: fileInput.name,
-        type: fileInput.type
-      }
-
-      return {
-        'Image': this.imageData
-      }
-    }
-
+export const InputNode = defineNode({
+  type: 'InputNode',
+  title: 'Input Image',
+  outputs: {
+    image: () => new NodeInterface('Image', null)
+  },
+  state: {
+    imageData: null
+  },
+  onCreate() {
+    // Initialize state
+    this.state.imageData = null
+  },
+  async onCalculate() {
+    // In v2, we don't have built-in file input
+    // We'll need to handle this differently
     return {
-      'Image': this.imageData
+      image: this.state.imageData
     }
   }
-}
+})
