@@ -13,12 +13,6 @@ export const OutputNode = defineNode({
     outputImageUrl: null,
     outputBlob: null
   },
-  onCreate() {
-    this.state.filename = 'output'
-    this.state.format = 'png'
-    this.state.outputImageUrl = null
-    this.state.outputBlob = null
-  },
   async onCalculate() {
     const inputImage = this.inputs.image.value
 

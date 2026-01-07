@@ -15,11 +15,6 @@ export const BlurNode = defineNode({
     sigma: 1,
     channel: 'All'
   },
-  onCreate() {
-    this.state.radius = 0
-    this.state.sigma = 1
-    this.state.channel = 'All'
-  },
   async onCalculate() {
     const inputImage = this.inputs.image.value
 
