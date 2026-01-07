@@ -1,0 +1,32 @@
+{
+  "name": "cc_imagickui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:64378/git/IeuanK/CC_ImagickUI"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@baklavajs/core": "^2.8.1",
+    "@baklavajs/plugin-engine": "^1.10.2",
+    "@baklavajs/plugin-interface-types": "^1.10.2",
+    "@baklavajs/renderer-vue": "^2.8.1",
+    "@baklavajs/themes": "^2.8.1",
+    "magica": "^0.2.17",
+    "vue": "^3.5.26"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.3",
+    "vite": "^7.3.1"
+  }
+}
