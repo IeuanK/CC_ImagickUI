@@ -21,17 +21,6 @@ export const ScaleNode = defineNode({
     fillArea: false,
     percentage: false
   },
-  onCreate() {
-    this.state.width = 800
-    this.state.height = 600
-    this.state.maintainAspectRatio = true
-    this.state.scaleMode = 'Resize'
-    this.state.ignoreAspectRatio = false
-    this.state.onlyShrink = false
-    this.state.onlyEnlarge = false
-    this.state.fillArea = false
-    this.state.percentage = false
-  },
   async onCalculate() {
     const inputImage = this.inputs.image.value
 
